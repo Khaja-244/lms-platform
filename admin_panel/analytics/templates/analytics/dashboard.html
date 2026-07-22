@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+{{ popular_course_labels|json_script:"popularCourseLabels" }}
+{{ popular_course_values|json_script:"popularCourseValues" }}
+{{ activity_labels|json_script:"activityLabels" }}
+{{ activity_values|json_script:"activityValues" }}
+{{ revenue_labels|json_script:"revenueLabels" }}
+{{ revenue_values|json_script:"revenueValues" }}
+{{ revenue_by_plan_labels|json_script:"revenuePlanLabels" }}
+{{ revenue_by_plan_values|json_script:"revenuePlanValues" }}
+{{ enrollment_labels|json_script:"enrollmentLabels" }}
+{{ enrollment_values|json_script:"enrollmentValues" }}
+{{ course_mix_values|json_script:"courseMixValues" }}
+{{ chat_labels|json_script:"chatLabels" }}
+{{ chat_values|json_script:"chatValues" }}
+
+<div class="page-header">
+    <div>
+        <span class="section-kicker">Analytics</span>
+        <h1>Analytics Dashboard</h1>
+        <p class="text-secondary mb-0">Production overview for users, courses, subscriptions, revenue, and activity.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'analytics:notification_create' %}" class="btn btn-primary">
+            <i class="bi bi-bell-plus me-1"></i>Create Notification
+        </a>
+        <a href="{% url 'analytics:notification_list' %}" class="btn btn-outline-primary">
+            <i class="bi bi-inbox me-1"></i>Notification Center
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3"><div class="panel metric-panel"><span>Total Users</span><strong>{{ total_users }}</strong><small>{{ new_users_today }} new today</small><i class="bi bi-people text-primary"></i></div></div>
+    <div class="col-12 col-sm-6 col-xl-3"><div class="panel metric-panel"><span>Active Users</span><strong>{{ active_users }}</strong><small>{{ inactive_users }} inactive</small><i class="bi bi-person-check text-success"></i></div></div>
+    <div class="col-12 col-sm-6 col-xl-3"><div class="panel metric-panel"><span>Monthly Revenue</span><strong>Rs. {{ monthly_revenue }}</strong><small>Rs. {{ todays_revenue }} today</small><i class="bi bi-cash-stack text-warning"></i></div></div>
+    <div class="col-12 col-sm-6 col-xl-3"><div class="panel metric-panel"><span>Course Completion</span><strong>{{ completion_rate }}%</strong><small>{{ most_popular_course }}</small><i class="bi bi-mortarboard text-danger"></i></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-8"><div class="panel h-100"><div class="d-flex justify-content-between"><h2 class="h6 fw-bold">Chat Activity</h2><span class="badge text-bg-light">{{ chat_messages_today }} today | {{ total_chat_messages }} total</span></div><div class="chart-panel"><canvas id="chatActivityChart"></canvas></div></div></div>
+    <div class="col-12 col-xl-4"><div class="panel h-100"><h2 class="h6 fw-bold">Most Active Chat Users</h2><ol class="list-group list-group-numbered list-group-flush">{% for row in active_chat_users %}<li class="list-group-item d-flex justify-content-between"><span>{{ row.sender__name }}</span><span class="badge text-bg-primary">{{ row.message_count }}</span></li>{% empty %}<li class="list-group-item text-secondary">No messages yet.</li>{% endfor %}</ol></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Students</span><strong>{{ student_count }}</strong></div></div>
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Instructors</span><strong>{{ instructor_count }}</strong></div></div>
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Courses</span><strong>{{ total_courses }}</strong></div></div>
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Published</span><strong>{{ published_courses }}</strong></div></div>
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Premium</span><strong>{{ premium_courses }}</strong></div></div>
+    <div class="col-6 col-xl-2"><div class="panel mini-stat"><span>Free</span><strong>{{ free_courses }}</strong></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-4"><div class="panel mini-stat"><span>Active Subscriptions</span><strong>{{ active_subscriptions }}</strong><small>{{ new_subscriptions }} new this month</small></div></div>
+    <div class="col-12 col-xl-4"><div class="panel mini-stat"><span>Expired / Cancelled</span><strong>{{ expired_subscriptions }} / {{ cancelled_subscriptions }}</strong><small>{{ renewed_subscriptions }} renewed subscriptions</small></div></div>
+    <div class="col-12 col-xl-4"><div class="panel mini-stat"><span>Payments</span><strong>{{ successful_payments }} success</strong><small>{{ failed_payments }} failed | Rs. {{ total_revenue }} total</small></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-12 col-xl-6">
+        <div class="panel h-100">
+            <h2 class="h6 fw-bold">Revenue Trend</h2>
+            <div class="chart-panel"><canvas id="revenueChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="panel h-100">
+            <h2 class="h6 fw-bold">Enrollment Trend</h2>
+            <div class="chart-panel"><canvas id="enrollmentChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="panel h-100">
+            <h2 class="h6 fw-bold">Top Enrolled Courses</h2>
+            <div class="chart-panel"><canvas id="popularCoursesChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="panel h-100">
+            <h2 class="h6 fw-bold">Revenue by Plan</h2>
+            <div class="chart-panel"><canvas id="revenueByPlanChart"></canvas></div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="panel h-100">
+            <h2 class="h6 fw-bold">Premium vs Free</h2>
+            <div class="chart-panel"><canvas id="courseMixChart"></canvas></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <div class="col-12 col-xl-6">
+        <div class="panel h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 fw-bold mb-0">Recent Activities</h2>
+                <span class="badge text-bg-light">{{ daily_activity }} today | {{ weekly_activity }} week</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table enhanced-table align-middle mb-0">
+                    <thead><tr><th>User</th><th>Action</th><th>IP</th><th>Time</th></tr></thead>
+                    <tbody>
+                    {% for log in recent_logs %}
+                        <tr>
+                            <td>{{ log.user.name }}</td>
+                            <td>{{ log.action_type }}<div class="text-secondary small">{{ log.action_detail|truncatechars:56 }}</div></td>
+                            <td>{{ log.ip_address|default:"-" }}</td>
+                            <td>{{ log.created_at|date:"d M Y H:i" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center text-secondary py-4">No activity logs yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-6">
+        <div class="panel h-100">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="h6 fw-bold mb-0">Recent Payments</h2>
+                <a href="{% url 'payments:payment_list' %}" class="small fw-semibold text-decoration-none">View all</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table enhanced-table align-middle mb-0">
+                    <thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Status</th></tr></thead>
+                    <tbody>
+                    {% for payment in recent_payments %}
+                        <tr>
+                            <td>{{ payment.subscription.user.name }}</td>
+                            <td>{{ payment.subscription.plan.name }}</td>
+                            <td>Rs. {{ payment.amount }}</td>
+                            <td><span class="badge text-bg-success">{{ payment.payment_status }}</span></td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4" class="text-center text-secondary py-4">No payments yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    const colors = ["#174ea6", "#0f766e", "#b7791f", "#b42318", "#475467", "#7c3aed", "#0369a1", "#15803d"];
+    const dataFrom = (id) => JSON.parse(document.getElementById(id).textContent);
+    const buildChart = (id, type, labels, values, label) => {
+        const element = document.getElementById(id);
+        if (!element) return;
+        new Chart(element, {
+            type,
+            data: { labels, datasets: [{ label, data: values, backgroundColor: colors, borderColor: colors, tension: 0.35, borderWidth: 2 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: "bottom" } }, scales: type === "pie" || type === "doughnut" ? {} : { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+    };
+    buildChart("revenueChart", "line", dataFrom("revenueLabels"), dataFrom("revenueValues"), "Revenue");
+    buildChart("enrollmentChart", "line", dataFrom("enrollmentLabels"), dataFrom("enrollmentValues"), "Enrollments");
+    buildChart("popularCoursesChart", "bar", dataFrom("popularCourseLabels"), dataFrom("popularCourseValues"), "Enrollments");
+    buildChart("revenueByPlanChart", "bar", dataFrom("revenuePlanLabels"), dataFrom("revenuePlanValues"), "Revenue");
+    buildChart("courseMixChart", "doughnut", ["Premium", "Free"], dataFrom("courseMixValues"), "Courses");
+    buildChart("chatActivityChart", "line", dataFrom("chatLabels"), dataFrom("chatValues"), "Messages");
+</script>
+{% endblock %}

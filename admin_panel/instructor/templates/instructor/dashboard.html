@@ -1,0 +1,108 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Instructor Dashboard | AKR LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="{% static 'instructor/portal.css' %}">
+</head>
+<body class="dashboard-page">
+<aside class="portal-sidebar">
+    <div class="logo"><i class="bi bi-easel2-fill"></i><span>AKR Instructor</span></div>
+    <nav>
+        <a href="#overview"><i class="bi bi-grid"></i>Overview</a>
+        <a href="#courses"><i class="bi bi-journal-richtext"></i>Courses</a>
+        <a href="#assignments"><i class="bi bi-file-earmark-check"></i>Assignments</a>
+        <a href="#attendance"><i class="bi bi-calendar-check"></i>Attendance</a>
+        <a href="#chat"><i class="bi bi-chat-dots"></i>Messages</a>
+        <a href="#notifications"><i class="bi bi-bell"></i>Notifications</a>
+    </nav>
+    <button class="btn btn-outline-light w-100" id="logoutButton"><i class="bi bi-box-arrow-left me-2"></i>Logout</button>
+</aside>
+<main class="portal-main">
+    <header class="portal-header">
+        <div><p class="eyebrow">Instructor workspace</p><h1>Welcome, <span id="instructorName">Instructor</span></h1></div>
+        <span class="role-chip"><i class="bi bi-shield-check"></i> Verified instructor</span>
+    </header>
+    <div id="alert" class="alert d-none"></div>
+    <section id="overview" class="stats-grid">
+        <article><i class="bi bi-journal-richtext"></i><strong id="courseCount">0</strong><span>My courses</span></article>
+        <article><i class="bi bi-people"></i><strong id="studentCount">0</strong><span>Enrolled students</span></article>
+        <article><i class="bi bi-file-earmark-text"></i><strong id="assignmentCount">0</strong><span>Assignments</span></article>
+        <article><i class="bi bi-inbox"></i><strong id="submissionCount">0</strong><span>Submissions</span></article>
+    </section>
+    <section id="courses" class="panel">
+        <div class="panel-title"><div><p class="eyebrow">Content</p><h2>My courses and lessons</h2></div></div>
+        <div id="courseList" class="course-grid"></div>
+        <details class="mt-4"><summary class="fw-bold">Create a course</summary>
+            <form id="courseForm" class="form-grid mt-3">
+                <input class="form-control" name="title" placeholder="Course title" required>
+                <select class="form-select" name="level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select>
+                <input class="form-control" name="duration" placeholder="Duration" value="12 Hours">
+                <select class="form-select" name="status"><option value="draft">Draft</option><option value="published">Published</option></select>
+                <textarea class="form-control span-2" name="description" placeholder="Course description" required></textarea>
+                <button class="btn btn-primary" type="submit">Create course</button>
+            </form>
+        </details>
+        <details class="mt-3"><summary class="fw-bold">Add a YouTube lesson</summary>
+            <form id="lessonForm" class="form-grid mt-3">
+                <select class="form-select" name="course_id" id="lessonCourse" required></select>
+                <input class="form-control" name="title" placeholder="Lesson title" required>
+                <input class="form-control span-2" name="video_url" type="url" placeholder="https://www.youtube.com/watch?v=..." required>
+                <textarea class="form-control span-2" name="content" placeholder="Lesson notes"></textarea>
+                <input class="form-control" name="order" type="number" min="0" value="1">
+                <button class="btn btn-primary" type="submit">Add lesson</button>
+            </form>
+        </details>
+    </section>
+    <section id="assignments" class="panel">
+        <div class="panel-title"><div><p class="eyebrow">Assessment</p><h2>Assignments and grading</h2></div></div>
+        <form id="assignmentForm" class="form-grid">
+            <select class="form-select" name="course_id" id="assignmentCourse" required></select>
+            <input class="form-control" name="title" placeholder="Assignment title" required>
+            <input class="form-control" name="deadline" type="datetime-local" required>
+            <textarea class="form-control span-2" name="description" placeholder="Instructions"></textarea>
+            <button class="btn btn-primary" type="submit">Create assignment</button>
+        </form>
+        <div id="assignmentList" class="table-responsive mt-4"></div>
+    </section>
+    <section id="attendance" class="panel">
+        <div class="panel-title"><div><p class="eyebrow">Learners</p><h2>Mark attendance</h2></div></div>
+        <div class="form-grid">
+            <select class="form-select" id="attendanceCourse"></select>
+            <input class="form-control" id="attendanceDate" type="date">
+        </div>
+        <div id="studentList" class="student-list mt-3"></div>
+        <button class="btn btn-primary mt-3" id="markAttendance">Save attendance</button>
+    </section>
+    <section id="notifications" class="panel">
+        <div class="panel-title"><div><p class="eyebrow">Updates</p><h2>Notifications</h2></div></div>
+        <div id="notificationList"></div>
+    </section>
+    <section id="chat" class="panel">
+        <div class="panel-title"><div><p class="eyebrow">Collaboration</p><h2>Student messages</h2></div></div>
+        <div class="form-grid">
+            <select class="form-select" id="chatStudent"></select>
+            <button class="btn btn-outline-primary" id="startChat">Start private chat</button>
+        </div>
+        <div id="chatRooms" class="d-flex flex-wrap gap-2 my-3"></div>
+        <div id="chatPresence" class="small text-muted mb-2">Select a conversation</div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div id="chatTyping" class="small text-primary mt-1"></div>
+        <form id="messageForm" class="input-group mt-3 d-none">
+            <input class="form-control" id="messageText" maxlength="2000" placeholder="Write a message" required>
+            <button class="btn btn-primary">Send</button>
+        </form>
+        <form id="instructorFileForm" class="d-flex gap-2 mt-2 d-none">
+            <input class="form-control form-control-sm" id="instructorChatFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.gif,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.zip" required>
+            <button class="btn btn-sm btn-outline-success" type="submit"><i class="bi bi-paperclip"></i> Share file</button>
+        </form>
+    </section>
+</main>
+<script>window.API_BASE_URL="{{ fastapi_base_url }}";</script>
+<script src="{% static 'instructor/portal.js' %}"></script>
+</body>
+</html>

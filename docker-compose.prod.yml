@@ -1,0 +1,47 @@
+# Example production overlay.
+#
+# Usage:
+#   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
+#
+# This does NOT replace real secrets management (use your platform's
+# secret store - AWS Secrets Manager, Docker Swarm secrets, Kubernetes
+# Secrets, etc.) - the placeholder values below MUST be replaced.
+
+services:
+  admin_panel:
+    environment:
+      DJANGO_SECRET_KEY: "REPLACE_WITH_A_REAL_RANDOM_SECRET"
+      DJANGO_DEBUG: "False"
+      DJANGO_ALLOWED_HOSTS: "yourdomain.com,www.yourdomain.com"
+      DJANGO_SECURE_SSL_REDIRECT: "True"
+      DJANGO_CSRF_TRUSTED_ORIGINS: "https://yourdomain.com"
+      DJANGO_DB_CONN_MAX_AGE: 60
+      DJANGO_LOG_LEVEL: INFO
+      FASTAPI_BASE_URL: "https://api.yourdomain.com"
+      GUNICORN_WORKERS: 4
+      POSTGRES_PASSWORD: "REPLACE_WITH_A_REAL_DB_PASSWORD"
+    restart: always
+
+  user_api:
+    environment:
+      JWT_SECRET_KEY: "REPLACE_WITH_A_DIFFERENT_REAL_RANDOM_SECRET"
+      APP_ENV: production
+      GUNICORN_WORKERS: 4
+      LOG_LEVEL: INFO
+      CORS_ORIGINS: "https://yourdomain.com"
+      DEFAULT_FROM_EMAIL: "support@yourdomain.com"
+      SMTP_HOST: "smtp.your-provider.com"
+      SMTP_PORT: 587
+      SMTP_USERNAME: "REPLACE_WITH_SMTP_USERNAME"
+      SMTP_PASSWORD: "REPLACE_WITH_SMTP_PASSWORD"
+      SMTP_USE_TLS: "True"
+      POSTGRES_PASSWORD: "REPLACE_WITH_A_REAL_DB_PASSWORD"
+    restart: always
+
+  db:
+    environment:
+      POSTGRES_PASSWORD: "REPLACE_WITH_A_REAL_DB_PASSWORD"
+    restart: always
+    # In real production, also add:
+    #   - a managed Postgres instance instead of a container (RDS, Cloud SQL, etc.), or
+    #   - a volume-backed backup strategy if you keep running it in Docker

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'accounts:user_list' %}">Users</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ title }}</li>
+            </ol>
+        </nav>
+        <h1>{{ title }}</h1>
+        <p>Keep account details clear, accurate, and ready for LMS access.</p>
+    </div>
+</div>
+
+<section class="panel form-panel">
+    <form method="post" class="needs-validation js-submit-with-spinner" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.name.id_for_label }}">Full Name <span class="required">*</span></label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="invalid-feedback d-block">{{ form.name.errors|striptags }}</div>
+                {% else %}
+                    <div class="invalid-feedback">Full name is required.</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.email.id_for_label }}">Email <span class="required">*</span></label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <div class="invalid-feedback d-block">{{ form.email.errors|striptags }}</div>
+                {% else %}
+                    <div class="invalid-feedback">Enter a valid email address.</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.role.id_for_label }}">Role <span class="required">*</span></label>
+                {{ form.role }}
+                {% if form.role.errors %}
+                    <div class="invalid-feedback d-block">{{ form.role.errors|striptags }}</div>
+                {% else %}
+                    <div class="invalid-feedback">Select a role.</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label" for="{{ form.password.id_for_label }}">Password</label>
+                <div class="input-group">
+                    {{ form.password }}
+                    <button class="btn btn-outline-secondary password-toggle" type="button" data-password-toggle aria-label="Show password">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                <div class="form-text">{{ form.password.help_text }}</div>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">{{ form.password.errors|striptags }}</div>
+                {% endif %}
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active account</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'accounts:user_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary" data-loading-text="Saving...">
+                <span class="btn-label"><i class="bi bi-check2 me-2"></i>Save User</span>
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

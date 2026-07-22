@@ -1,0 +1,117 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: lms_db
+      POSTGRES_USER: lms_user
+      POSTGRES_PASSWORD: lms_password
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - lms_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lms_user -d lms_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+    command: redis-server --appendonly yes
+
+    ports:
+      - "6379:6379"
+
+    volumes:
+      - lms_redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  admin_panel:
+    build: ./admin_panel
+    restart: unless-stopped
+
+    volumes:
+      - ./admin_panel:/app
+
+    environment:
+      DJANGO_SECRET_KEY: dev-secret-key-change-in-production
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+
+      DJANGO_DB_CONN_MAX_AGE: 60
+      DJANGO_LOG_LEVEL: INFO
+      FASTAPI_BASE_URL: http://localhost:8001
+
+      POSTGRES_DB: lms_db
+      POSTGRES_USER: lms_user
+      POSTGRES_PASSWORD: lms_password
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+
+    ports:
+      - "8000:8000"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+  user_api:
+    build: ./user_api
+    restart: unless-stopped
+
+    volumes:
+      - ./user_api:/app
+
+    environment:
+      JWT_SECRET_KEY: dev-jwt-secret-change-in-production
+      JWT_EXPIRE_MINUTES: 60
+      APP_ENV: development
+      LOG_LEVEL: INFO
+
+      CORS_ORIGINS: http://localhost:8000,http://127.0.0.1:8000
+
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_USE_TLS: ${SMTP_USE_TLS:-True}
+
+      POSTGRES_DB: lms_db
+      POSTGRES_USER: lms_user
+      POSTGRES_PASSWORD: lms_password
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_DB: 0
+
+    ports:
+      - "8001:8001"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+      redis:
+        condition: service_healthy
+
+      admin_panel:
+        condition: service_started
+
+volumes:
+  lms_postgres_data:
+  lms_redis_data:

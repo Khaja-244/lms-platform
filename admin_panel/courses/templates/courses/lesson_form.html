@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard:index' %}">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'courses:course_list' %}">Courses</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'courses:course_detail' course.pk %}">
+                        {{ course.title }}
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    {{ title }}
+                </li>
+            </ol>
+        </nav>
+
+        <h1>{{ title }}</h1>
+        <p>Course: {{ course.title }}</p>
+    </div>
+</div>
+
+<section class="panel form-panel wide">
+
+<form
+    method="post"
+    enctype="multipart/form-data"
+    class="needs-validation js-submit-with-spinner"
+    novalidate
+>
+
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form-label">Lesson Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lesson Content</label>
+        {{ form.content }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Video URL (Optional)</label>
+        {{ form.video_url }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Upload Video</label>
+        {{ form.video }}
+
+        {% if form.instance.video %}
+            <div class="mt-2">
+                <a href="{{ form.instance.video.url }}" target="_blank">
+                    Current Video
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Lesson Notes (PDF)</label>
+        {{ form.notes }}
+
+        {% if form.instance.notes %}
+            <div class="mt-2">
+                <a href="{{ form.instance.notes.url }}" target="_blank">
+                    Current Notes
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Resources</label>
+        {{ form.resources }}
+
+        {% if form.instance.resources %}
+            <div class="mt-2">
+                <a href="{{ form.instance.resources.url }}" target="_blank">
+                    Current Resource
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Display Order</label>
+        {{ form.order }}
+    </div>
+
+    <div class="form-actions">
+
+        <a
+            href="{% url 'courses:course_detail' course.pk %}"
+            class="btn btn-outline-secondary">
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            <i class="bi bi-check2"></i>
+            Save Lesson
+
+        </button>
+
+    </div>
+
+</form>
+
+</section>
+{% endblock %}

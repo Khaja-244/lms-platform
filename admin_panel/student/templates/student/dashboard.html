@@ -1,0 +1,33 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Dashboard | AKR LMS{% endblock %}
+{% block page_id %}dashboard{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Student Dashboard</span>
+        <h1>Welcome back, <span data-first-name>Student</span></h1>
+        <p>Continue learning, track progress, manage subscription, and review account activity.</p>
+    </div>
+    <button class="btn btn-primary" data-refresh-page><i class="bi bi-arrow-clockwise me-2"></i>Refresh</button>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3"><div class="metric-card"><span>Enrolled Courses</span><strong id="statEnrolled">0</strong><small>Courses in your library</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="metric-card"><span>Average Progress</span><strong id="statProgress">0%</strong><small>Across active courses</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="metric-card"><span>Active Plan</span><strong id="statPlan">None</strong><small id="statPlanHelp">Choose a plan to unlock premium courses</small></div></div>
+    <div class="col-sm-6 col-xl-3"><div class="metric-card"><span>Unread Alerts</span><strong id="statNotifications">0</strong><small>Notifications waiting</small></div></div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-8">
+        <div class="card mb-4"><div class="card-header">Continue Learning</div><div class="card-body" id="continueLearning"></div></div>
+        <div class="card"><div class="card-header">My Courses</div><div class="card-body"><div class="row g-3" id="dashboardCourses"></div></div></div>
+    </div>
+    <div class="col-xl-4">
+        <div class="card mb-4"><div class="card-header">Notifications</div><div class="card-body" id="dashboardNotifications"></div></div>
+        <div class="card"><div class="card-header">Recent Activity</div><div class="card-body" id="dashboardActivity"></div></div>
+    </div>
+</div>
+{% endblock %}

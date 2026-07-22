@@ -1,0 +1,461 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }}{% endblock %}
+{% block page_heading %}Course Detail{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ course.title }}</li>
+            </ol>
+        </nav>
+        <h1>{{ course.title }}</h1>
+        <p class="text-secondary-emphasis">{{ course.description|default:"No description added yet." }}</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'courses:course_edit' course.pk %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+            <i class="bi bi-pencil"></i> Edit Course
+        </a>
+        <a href="{% url 'courses:course_list' %}" class="btn btn-outline-secondary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+</div>
+
+<!-- Course Media Summary -->
+<div class="card border-0 shadow-sm rounded-3 mb-4 overflow-hidden course-detail-hero">
+    <div class="row g-0">
+        <div class="col-lg-4">
+            {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="w-100 h-100 course-detail-thumbnail" alt="{{ course.title }}">
+            {% else %}
+                <div class="course-detail-placeholder">
+                    <i class="bi bi-journal-play"></i>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-8">
+            <div class="card-body p-4">
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    {% if course.is_premium %}
+                        <span class="badge bg-warning text-dark rounded-pill"><i class="bi bi-gem"></i> Premium</span>
+                    {% else %}
+                        <span class="badge bg-success rounded-pill">Free Course</span>
+                    {% endif %}
+                    <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill">{{ course.level }}</span>
+                    <span class="badge bg-light text-dark rounded-pill"><i class="bi bi-clock"></i> {{ course.duration }}</span>
+                </div>
+                <h2 class="h4 fw-bold">{{ course.title }}</h2>
+                <p class="text-secondary-emphasis">{{ course.description|default:"No description added yet." }}</p>
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="mini-metric">
+                            <span>Price</span>
+                            <strong>Rs. {{ course.price }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mini-metric">
+                            <span>Commission</span>
+                            <strong>{{ course.instructor_commission }}%</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="mini-metric">
+                            <span>Created</span>
+                            <strong>{{ course.created_at|date:"d M Y" }}</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Course Info Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="info-tile">
+            <div class="info-tile-icon bg-primary bg-opacity-10 text-primary">
+                <i class="bi bi-person-workspace"></i>
+            </div>
+            <div class="info-tile-content">
+                <span class="info-tile-label">Instructor</span>
+                <strong class="info-tile-value">{{ course.instructor.name }}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="info-tile">
+            <div class="info-tile-icon bg-success bg-opacity-10 text-success">
+                <i class="bi bi-book"></i>
+            </div>
+            <div class="info-tile-content">
+                <span class="info-tile-label">Lessons</span>
+                <strong class="info-tile-value">{{ lessons|length }}</strong>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="info-tile">
+            <div class="info-tile-icon {% if course.status == 'published' %}bg-success bg-opacity-10 text-success{% elif course.status == 'draft' %}bg-warning bg-opacity-10 text-warning{% else %}bg-secondary bg-opacity-10 text-secondary{% endif %}">
+                <i class="bi bi-flag"></i>
+            </div>
+            <div class="info-tile-content">
+                <span class="info-tile-label">Status</span>
+                <strong class="info-tile-value">
+                    <span class="badge {% if course.status == 'published' %}bg-success{% elif course.status == 'draft' %}bg-warning{% else %}bg-secondary{% endif %} rounded-pill px-2 py-1">
+                        {{ course.get_status_display }}
+                    </span>
+                </strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lessons Section -->
+<section class="panel">
+    <div class="panel-header">
+        <div>
+            <h2>Lessons</h2>
+            <p>Organize course content and supporting videos.</p>
+        </div>
+        <a href="{% url 'courses:lesson_create' course.pk %}" class="btn btn-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+            <i class="bi bi-plus-lg"></i> Add Lesson
+        </a>
+    </div>
+
+    <div class="table-toolbar">
+        <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="search" class="form-control form-control-sm" data-table-search="#lessonsTable" placeholder="Search lessons...">
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table align-middle enhanced-table" id="lessonsTable" data-page-size="8">
+            <thead>
+                <tr>
+                    <th style="width: 8%;" data-sort="number">Order</th>
+                    <th style="width: 42%;" data-sort="text">Title</th>
+                    <th style="width: 30%;" data-sort="text">Media</th>
+                    <th style="width: 20%;" class="text-end no-sort">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson in lessons %}
+                <tr class="table-row-hover">
+                    <td>
+                        <span class="badge bg-light text-secondary rounded-pill px-2 py-1 small">{{ lesson.order }}</span>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <strong class="small">{{ lesson.title }}</strong>
+                            {% if lesson.content %}
+                                <span class="text-secondary-emphasis small text-truncate-2">{{ lesson.content|truncatechars:80 }}</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        {% if lesson.video_url %}
+                            <a href="{{ lesson.video_url }}" target="_blank" rel="noopener" class="link-with-icon text-primary text-decoration-none small">
+                                <i class="bi bi-youtube"></i> YouTube
+                            </a>
+                        {% endif %}
+                        {% if lesson.video %}
+                            <a href="{{ lesson.video.url }}" target="_blank" rel="noopener" class="link-with-icon text-success text-decoration-none small d-block">
+                                <i class="bi bi-file-play"></i> Uploaded Video
+                            </a>
+                        {% endif %}
+                        {% if lesson.notes %}
+                            <a href="{{ lesson.notes.url }}" target="_blank" rel="noopener" class="link-with-icon text-danger text-decoration-none small d-block">
+                                <i class="bi bi-file-earmark-pdf"></i> Notes
+                            </a>
+                        {% endif %}
+                        {% if lesson.resources %}
+                            <a href="{{ lesson.resources.url }}" target="_blank" rel="noopener" class="link-with-icon text-secondary text-decoration-none small d-block">
+                                <i class="bi bi-file-zip"></i> Resources
+                            </a>
+                        {% endif %}
+                        {% if not lesson.video_url and not lesson.video and not lesson.notes and not lesson.resources %}
+                            <span class="text-muted small">No media uploaded</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <div class="action-icons">
+                            <a href="{% url 'courses:lesson_edit' course.pk lesson.pk %}" class="btn btn-icon-sm" data-bs-toggle="tooltip" data-bs-title="Edit lesson" aria-label="Edit lesson">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'courses:lesson_delete' course.pk lesson.pk %}" class="btn btn-icon-sm text-danger" data-confirm="Delete {{ lesson.title }}?" data-bs-toggle="tooltip" data-bs-title="Delete lesson" aria-label="Delete lesson">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row">
+                    <td colspan="4">
+                        <div class="empty-state">
+                            <i class="bi bi-play-circle"></i>
+                            <h3>No lessons yet</h3>
+                            <p>Add lessons to turn this course into a learning path.</p>
+                            <a href="{% url 'courses:lesson_create' course.pk %}" class="btn btn-primary btn-sm rounded-pill px-3 mt-2 d-inline-flex align-items-center gap-1">
+                                <i class="bi bi-plus-lg"></i> Add First Lesson
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-footer" data-table-pagination="#lessonsTable"></div>
+</section>
+
+<style>
+    .course-detail-thumbnail,
+    .course-detail-placeholder {
+        min-height: 260px;
+        object-fit: cover;
+    }
+    .course-detail-placeholder {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #dbeafe, #fef3c7);
+        color: #2563eb;
+        font-size: 4rem;
+    }
+    .mini-metric {
+        border: 1px solid #e9edf4;
+        border-radius: 10px;
+        padding: 0.75rem;
+        background: #f8fafc;
+    }
+    .mini-metric span {
+        display: block;
+        color: #64748b;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+    .mini-metric strong {
+        display: block;
+        color: #0b1a33;
+        margin-top: 2px;
+    }
+    /* Info Tiles */
+    .info-tile {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid #e9edf4;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+    .info-tile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+        border-color: transparent;
+    }
+    .info-tile-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        flex-shrink: 0;
+    }
+    .info-tile-content {
+        flex: 1;
+        min-width: 0;
+    }
+    .info-tile-label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+    }
+    .info-tile-value {
+        display: block;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #0b1a33;
+        margin-top: 2px;
+    }
+    
+    /* Search Box */
+    .search-box {
+        position: relative;
+    }
+    .search-box i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+    .search-box .form-control {
+        padding-left: 34px;
+        border-radius: 8px;
+        border-color: #e9edf4;
+        font-size: 0.85rem;
+    }
+    .search-box .form-control:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 0.18rem rgba(37, 99, 235, 0.08);
+    }
+    
+    /* Table Row Hover */
+    .table-row-hover {
+        transition: background 0.15s ease;
+    }
+    .table-row-hover:hover {
+        background: #f8fafc;
+    }
+    
+    /* Action Icons */
+    .action-icons {
+        display: inline-flex;
+        gap: 4px;
+    }
+    .btn-icon-sm {
+        width: 28px;
+        height: 28px;
+        display: inline-grid;
+        place-items: center;
+        border: 1px solid #e9edf4;
+        background: #fff;
+        color: #2563eb;
+        border-radius: 6px;
+        transition: all 0.15s ease;
+    }
+    .btn-icon-sm:hover {
+        background: #f8fafc;
+        border-color: #2563eb;
+        color: #1d4ed8;
+        transform: translateY(-1px);
+    }
+    .btn-icon-sm.text-danger:hover {
+        border-color: #dc2626;
+        color: #dc2626;
+    }
+    
+    /* Text truncate */
+    .text-truncate-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Link with icon */
+    .link-with-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .link-with-icon:hover {
+        text-decoration: underline !important;
+    }
+    
+    /* Table Footer */
+    .table-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding-top: 14px;
+        color: #64748b;
+        flex-wrap: wrap;
+        font-size: 0.78rem;
+    }
+    
+    /* Pagination for lessons table */
+    .pager {
+        display: flex;
+        gap: 4px;
+    }
+    .pager .btn {
+        border-radius: 999px !important;
+        font-size: 0.75rem;
+        padding: 3px 14px;
+        border-color: #e9edf4;
+        color: #0b1a33;
+    }
+    .pager .btn:hover:not(:disabled) {
+        background: #f8fafc;
+        border-color: #2563eb;
+        color: #2563eb;
+    }
+    .pager .btn:disabled {
+        color: #94a3b8;
+        cursor: not-allowed;
+    }
+    
+    /* Empty State */
+    .empty-state i {
+        font-size: 2.4rem;
+        color: #94a3b8;
+        display: block;
+        margin-bottom: 8px;
+        opacity: 0.3;
+    }
+    .empty-state h3 {
+        color: #0b1a33;
+        font-size: 1rem;
+        font-weight: 700;
+        margin-top: 8px;
+    }
+    .empty-state p {
+        color: #64748b;
+        font-size: 0.85rem;
+        margin-bottom: 0;
+    }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+        .info-tile {
+            padding: 0.75rem 1rem;
+        }
+        .info-tile-icon {
+            width: 36px;
+            height: 36px;
+            font-size: 1rem;
+        }
+        .info-tile-value {
+            font-size: 0.9rem;
+        }
+        .search-box .form-control {
+            font-size: 0.8rem;
+        }
+        .enhanced-table thead th {
+            font-size: 0.5rem;
+            padding: 4px 6px;
+        }
+        .enhanced-table td {
+            padding: 4px 6px;
+            font-size: 0.7rem;
+        }
+        .btn-icon-sm {
+            width: 24px;
+            height: 24px;
+            font-size: 0.7rem;
+        }
+    }
+</style>
+{% endblock %}

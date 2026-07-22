@@ -1,0 +1,16 @@
+{% extends 'student/base.html' %}
+
+{% block title %}My Subscription | AKR LMS{% endblock %}
+{% block page_id %}subscription{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Membership</span>
+        <h1>My Subscription</h1>
+        <p>Review active plans, expiry dates, renewal, and payment actions.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'student:plans' %}">View Plans</a>
+</div>
+<div id="subscriptionList" class="vstack gap-3"></div>
+{% endblock %}

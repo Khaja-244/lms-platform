@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Login - LMS Admin{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+    <section class="login-hero">
+        <div class="brand-pill">
+            <i class="bi bi-stars"></i>
+            Production LMS Admin
+        </div>
+        <h1>Manage learning operations with confidence.</h1>
+        <p>Monitor users, courses, lessons, enrollments, and reports from one focused admin workspace.</p>
+        <div class="login-highlights">
+            <span><i class="bi bi-shield-check"></i> Secure admin access</span>
+            <span><i class="bi bi-graph-up-arrow"></i> Live reporting</span>
+            <span><i class="bi bi-lightning-charge"></i> Fast workflows</span>
+        </div>
+    </section>
+
+    <section class="card login-card">
+        <div class="login-brand text-center">
+            <div class="login-logo"><i class="bi bi-mortarboard-fill"></i></div>
+            <h2>LMS Admin Panel</h2>
+            <p>Sign in to continue to your dashboard</p>
+        </div>
+
+        <form method="post" class="needs-validation js-submit-with-spinner" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger small">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label class="form-label" for="{{ form.username.id_for_label }}">Email <span class="required">*</span></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                    <div class="invalid-feedback d-block">{{ form.username.errors|striptags }}</div>
+                {% else %}
+                    <div class="invalid-feedback">Please enter your admin email.</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-2">
+                <label class="form-label" for="{{ form.password.id_for_label }}">Password <span class="required">*</span></label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    {{ form.password }}
+                    <button class="btn btn-outline-secondary password-toggle" type="button" data-password-toggle aria-label="Show password">
+                        <i class="bi bi-eye"></i>
+                    </button>
+                </div>
+                {% if form.password.errors %}
+                    <div class="invalid-feedback d-block">{{ form.password.errors|striptags }}</div>
+                {% else %}
+                    <div class="invalid-feedback">Please enter your password.</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="remember_me" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <a href="mailto:admin@example.com?subject=LMS%20Admin%20password%20reset" class="small fw-semibold">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg" data-loading-text="Signing in...">
+                <span class="btn-label"><i class="bi bi-box-arrow-in-right me-2"></i>Sign In</span>
+            </button>
+        </form>
+
+        <div class="login-register">
+            <span>Need a learner or instructor account?</span>
+            <a href="http://localhost:8001/docs#/Authentication/register_register__post" target="_blank" rel="noopener">Register via User API</a>
+        </div>
+    </section>
+</div>
+{% endblock %}

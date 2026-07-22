@@ -1,0 +1,9 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Lesson Player | AKR LMS{% endblock %}
+{% block page_id %}lesson-player{% endblock %}
+
+{% block content %}
+<script>window.STUDENT_LESSON_CONTEXT_ID = {{ lesson_id }};</script>
+<div id="lessonPlayerRoot"></div>
+{% endblock %}

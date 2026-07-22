@@ -1,0 +1,524 @@
+﻿{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_heading %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="dashboard-header mb-3">
+    <div class="d-flex flex-wrap flex-md-nowrap align-items-start justify-content-between gap-3">
+        <div>
+            <h1 class="h2 fw-bold mb-0">Dashboard</h1>
+            <div class="d-flex align-items-center gap-2 flex-wrap mt-1">
+                <span class="text-secondary-emphasis small">Welcome back, Admin.</span>
+                <span class="text-muted small">-</span>                <span class="text-muted small">Last updated today</span>
+            </div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap flex-shrink-0">
+            <a href="{% url 'accounts:user_create' %}" class="btn btn-outline-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+                <i class="bi bi-person-plus"></i> Add User
+            </a>
+            <a href="{% url 'courses:course_create' %}" class="btn btn-primary btn-sm rounded-pill px-3 d-inline-flex align-items-center gap-1">
+                <i class="bi bi-plus-lg"></i> Add Course
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-3 mb-3">
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="stat-card stat-blue">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon bg-primary bg-opacity-10">
+                    <i class="bi bi-people-fill text-primary"></i>
+                </div>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">Total Students</span>
+                <strong class="stat-value">{{ total_students }}</strong>
+                <div class="stat-trend">
+                    <span class="text-success"><i class="bi bi-arrow-up-short"></i> +12%</span>
+                    <span class="text-muted small">this month</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="stat-card stat-green">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon bg-success bg-opacity-10">
+                    <i class="bi bi-person-workspace text-success"></i>
+                </div>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">Instructors</span>
+                <strong class="stat-value">{{ total_instructors }}</strong>
+                <div class="stat-trend">
+                    <span class="text-success"><i class="bi bi-arrow-up-short"></i> +8%</span>
+                    <span class="text-muted small">this month</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="stat-card stat-amber">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon bg-warning bg-opacity-10">
+                    <i class="bi bi-journal-bookmark-fill text-warning"></i>
+                </div>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">Total Courses</span>
+                <strong class="stat-value">{{ total_courses }}</strong>
+                <div class="stat-trend">
+                    <span class="text-muted"><i class="bi bi-journal-richtext"></i> {{ total_lessons }} lessons</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-xl-3">
+        <div class="stat-card stat-rose">
+            <div class="stat-icon-wrapper">
+                <div class="stat-icon bg-danger bg-opacity-10">
+                    <i class="bi bi-mortarboard text-danger"></i>
+                </div>
+            </div>
+            <div class="stat-info">
+                <span class="stat-label">Enrollments</span>
+                <strong class="stat-value">{{ total_enrollments }}</strong>
+                <div class="stat-trend">
+                    <span class="text-success"><i class="bi bi-arrow-up-short"></i> +24%</span>
+                    <span class="text-muted small">this month</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart and Quick Actions Row -->
+<div class="row g-3 mb-3">
+    <div class="col-12 col-xl-8">
+        <div class="card border-0 shadow-md rounded-3 h-100">
+            <div class="card-header bg-transparent border-0 px-3 pt-3 pb-0 d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <h6 class="fw-bold mb-0">Enrollment Analytics</h6>
+                    <p class="text-secondary-emphasis small mb-0">Course enrollment distribution</p>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-secondary border-0 rounded-pill px-2 py-1 small">
+                        <i class="bi bi-calendar3 me-1"></i> Last 30 days
+                    </span>
+                </div>
+            </div>
+            <div class="card-body p-3 pt-2">
+                <div class="chart-wrap" style="position: relative; height: 220px;">
+                    <canvas id="topCoursesChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-xl-4">
+        <div class="card border-0 shadow-md rounded-3 h-100">
+            <div class="card-header bg-transparent border-0 px-3 pt-3 pb-0">
+                <h6 class="fw-bold mb-0">Quick Actions</h6>
+                <p class="text-secondary-emphasis small mb-0">Common admin workflows</p>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    <a href="{% url 'accounts:user_create' %}" class="quick-action d-flex align-items-center gap-3 p-2 rounded-2 text-decoration-none bg-light bg-opacity-50 transition-hover">
+                        <div class="quick-icon bg-primary bg-opacity-10 text-primary">
+                            <i class="bi bi-person-plus"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small">Add User</div>
+                            <small class="text-secondary-emphasis d-block">Create new users or instructors</small>
+                        </div>
+                        <i class="bi bi-chevron-right text-secondary opacity-50 small"></i>
+                    </a>
+                    <a href="{% url 'courses:course_create' %}" class="quick-action d-flex align-items-center gap-3 p-2 rounded-2 text-decoration-none bg-light bg-opacity-50 transition-hover">
+                        <div class="quick-icon bg-success bg-opacity-10 text-success">
+                            <i class="bi bi-journal-plus"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small">Create Course</div>
+                            <small class="text-secondary-emphasis d-block">Build new learning content</small>
+                        </div>
+                        <i class="bi bi-chevron-right text-secondary opacity-50 small"></i>
+                    </a>
+                    <a href="{% url 'courses:course_list' %}" class="quick-action d-flex align-items-center gap-3 p-2 rounded-2 text-decoration-none bg-light bg-opacity-50 transition-hover">
+                        <div class="quick-icon bg-warning bg-opacity-10 text-warning">
+                            <i class="bi bi-kanban"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small">Course Catalog</div>
+                            <small class="text-secondary-emphasis d-block">Manage all courses</small>
+                        </div>
+                        <i class="bi bi-chevron-right text-secondary opacity-50 small"></i>
+                    </a>
+                    <a href="/django-admin/" class="quick-action d-flex align-items-center gap-3 p-2 rounded-2 text-decoration-none bg-light bg-opacity-50 transition-hover">
+                        <div class="quick-icon bg-secondary bg-opacity-10 text-secondary">
+                            <i class="bi bi-sliders"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold small">Django Admin</div>
+                            <small class="text-secondary-emphasis d-block">Advanced system settings</small>
+                        </div>
+                        <i class="bi bi-chevron-right text-secondary opacity-50 small"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activities Row -->
+<div class="row g-3">
+    <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-md rounded-3 h-100">
+            <div class="card-header bg-transparent border-0 px-3 pt-3 pb-0 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0">Recent Users</h6>
+                <a href="{% url 'accounts:user_list' %}" class="text-primary text-decoration-none small fw-semibold">View All </a>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    {% for recent_user in recent_users %}
+                        <div class="d-flex align-items-center gap-2 p-1 rounded-2 transition-hover bg-light bg-opacity-25">
+                            <div class="avatar-sm bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+                                <i class="bi bi-person fs-6"></i>
+                            </div>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold small text-truncate">{{ recent_user.name }}</div>
+                                <div class="d-flex align-items-center gap-1 flex-wrap">
+                                    <span class="badge bg-light text-secondary rounded-pill px-2 py-0 small">{{ recent_user.get_role_display }}</span>
+                                    <small class="text-secondary-emphasis">{{ recent_user.date_joined|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-3">
+                            <i class="bi bi-person fs-4 text-secondary-emphasis opacity-25"></i>
+                            <p class="text-secondary-emphasis small mb-0">No recent users yet</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-md rounded-3 h-100">
+            <div class="card-header bg-transparent border-0 px-3 pt-3 pb-0 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0">Recent Courses</h6>
+                <a href="{% url 'courses:course_list' %}" class="text-primary text-decoration-none small fw-semibold">View All </a>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    {% for recent_course in recent_courses %}
+                        <div class="d-flex align-items-center gap-2 p-1 rounded-2 transition-hover bg-light bg-opacity-25">
+                            <div class="avatar-sm bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+                                <i class="bi bi-book fs-6"></i>
+                            </div>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold small text-truncate">{{ recent_course.title }}</div>
+                                <div class="d-flex align-items-center gap-1 flex-wrap">
+                                    <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-0 small">{{ recent_course.instructor.name }}</span>
+                                    <small class="text-secondary-emphasis">{{ recent_course.created_at|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-3">
+                            <i class="bi bi-book fs-4 text-secondary-emphasis opacity-25"></i>
+                            <p class="text-secondary-emphasis small mb-0">No courses created yet</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-lg-4">
+        <div class="card border-0 shadow-md rounded-3 h-100">
+            <div class="card-header bg-transparent border-0 px-3 pt-3 pb-0 d-flex align-items-center justify-content-between">
+                <h6 class="fw-bold mb-0">Recent Enrollments</h6>
+                <a href="#" class="text-primary text-decoration-none small fw-semibold">View All </a>
+            </div>
+            <div class="card-body p-3">
+                <div class="d-flex flex-column gap-2">
+                    {% for enrollment in recent_enrollments %}
+                        <div class="d-flex align-items-center gap-2 p-1 rounded-2 transition-hover bg-light bg-opacity-25">
+                            <div class="avatar-sm bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center flex-shrink-0">
+                                <i class="bi bi-award fs-6"></i>
+                            </div>
+                            <div class="flex-grow-1 min-width-0">
+                                <div class="fw-semibold small text-truncate">{{ enrollment.user.name }}</div>
+                                <div class="d-flex align-items-center gap-1 flex-wrap">
+                                    <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-0 small">{{ enrollment.course.title }}</span>
+                                    <small class="text-secondary-emphasis">{{ enrollment.enrolled_on|date:"d M Y" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <div class="text-center py-3">
+                            <i class="bi bi-award fs-4 text-secondary-emphasis opacity-25"></i>
+                            <p class="text-secondary-emphasis small mb-0">No enrollments yet</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-header {
+        padding: 0.15rem 0 0.25rem 0;
+    }
+    
+    .stat-card {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e9edf4;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        min-height: 80px;
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+    }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px rgba(15, 23, 42, 0.10);
+        border-color: transparent;
+    }
+    .stat-blue::before { background: linear-gradient(90deg, #2563eb, #60a5fa); }
+    .stat-green::before { background: linear-gradient(90deg, #16a34a, #4ade80); }
+    .stat-amber::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .stat-rose::before { background: linear-gradient(90deg, #dc2626, #f87171); }
+    
+    .stat-icon-wrapper { flex-shrink: 0; }
+    .stat-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover .stat-icon { transform: scale(1.05) rotate(-2deg); }
+    .stat-info { flex: 1; min-width: 0; }
+    .stat-label {
+        display: block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #64748b;
+    }
+    .stat-value {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #0b1a33;
+        letter-spacing: -0.01em;
+    }
+    .stat-trend {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.7rem;
+        margin-top: 2px;
+    }
+    .stat-trend i { font-size: 0.9rem; }
+    
+    .quick-action {
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid transparent;
+        border-radius: 8px !important;
+        padding: 0.6rem 0.75rem !important;
+    }
+    .quick-action:hover {
+        background-color: rgba(255,255,255,0.9) !important;
+        border-color: #e9edf4;
+        transform: translateX(6px) scale(1.01);
+        box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+    }
+    .quick-action .quick-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+        transition: all 0.3s ease;
+    }
+    .quick-action:hover .quick-icon { transform: scale(1.05); }
+    .quick-action i.bi-chevron-right { transition: all 0.25s ease; }
+    .quick-action:hover i.bi-chevron-right {
+        opacity: 1 !important;
+        transform: translateX(4px);
+        color: var(--primary) !important;
+    }
+    
+    .avatar-sm {
+        width: 34px;
+        height: 34px;
+        flex-shrink: 0;
+        border-radius: 50% !important;
+        transition: all 0.2s ease;
+    }
+    .transition-hover:hover .avatar-sm { transform: scale(1.05); }
+    
+    .transition-hover {
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 6px !important;
+        cursor: pointer;
+    }
+    .transition-hover:hover {
+        background-color: rgba(255,255,255,0.7) !important;
+        transform: translateX(4px);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    }
+    
+    .min-width-0 { min-width: 0; }
+    .text-truncate {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .chart-wrap {
+        position: relative;
+        height: 220px;
+        width: 100%;
+    }
+    .shadow-md {
+        box-shadow: 0 4px 20px rgba(15, 23, 42, 0.07) !important;
+    }
+    .rounded-3 { border-radius: 10px !important; }
+    .card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card:hover {
+        box-shadow: 0 8px 32px rgba(15, 23, 42, 0.09) !important;
+    }
+    
+    @media (max-width: 576px) {
+        .chart-wrap { height: 180px; }
+        .stat-value { font-size: 1.3rem; }
+        .stat-icon { width: 38px; height: 38px; font-size: 1rem; }
+        .stat-card { padding: 0.75rem 1rem; min-height: 70px; }
+        .quick-action { padding: 0.4rem 0.5rem !important; }
+        .quick-action .quick-icon { width: 30px; height: 30px; font-size: 0.85rem; }
+        .dashboard-header h1 { font-size: 1.3rem !important; }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    const chartEl = document.getElementById('topCoursesChart');
+    if (chartEl) {
+        new Chart(chartEl, {
+            type: 'bar',
+            data: {
+                labels: {{ chart_labels|safe }},
+                datasets: [{
+                    label: 'Enrollments',
+                    data: {{ chart_data|safe }},
+                    backgroundColor: [
+                        'rgba(37, 99, 235, 0.85)',
+                        'rgba(22, 163, 74, 0.85)',
+                        'rgba(245, 158, 11, 0.85)',
+                        'rgba(220, 38, 38, 0.85)',
+                        'rgba(124, 58, 237, 0.85)'
+                    ],
+                    borderColor: ['#2563eb', '#16a34a', '#f59e0b', '#dc2626', '#7c3aed'],
+                    borderWidth: 2,
+                    borderRadius: 6,
+                    maxBarThickness: 44,
+                    hoverBackgroundColor: [
+                        'rgba(37, 99, 235, 1)',
+                        'rgba(22, 163, 74, 1)',
+                        'rgba(245, 158, 11, 1)',
+                        'rgba(220, 38, 38, 1)',
+                        'rgba(124, 58, 237, 1)'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 16,
+                            font: { size: 11, weight: '600' },
+                            color: '#64748b',
+                            usePointStyle: true,
+                            pointStyle: 'circle'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                        backdropColor: 'rgba(15, 23, 42, 0.95)',
+                        padding: 14,
+                        titleFont: { size: 13, weight: '700' },
+                        bodyFont: { size: 12 },
+                        cornerRadius: 10,
+                        borderColor: 'rgba(255,255,255,0.1)',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.parsed.y} enrollments`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#64748b', font: { size: 12, weight: '600' } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0,
+                            color: '#64748b',
+                            font: { size: 11 },
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: 'rgba(148, 163, 184, 0.10)',
+                            drawBorder: false,
+                            drawTicks: false
+                        },
+                        border: { display: false }
+                    }
+                },
+                interaction: { intersect: false, mode: 'index' },
+                animation: { duration: 800, easing: 'easeInOutQuart' }
+            }
+        });
+    }
+</script>
+{% endblock %}

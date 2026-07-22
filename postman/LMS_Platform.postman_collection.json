@@ -1,0 +1,311 @@
+{
+  "info": {
+    "name": "LMS Subscription Analytics Platform - Complete API",
+    "description": "Complete Postman collection for LMS, subscriptions, payments, invoices, notifications, activity logs, and analytics. Login requests save {{access_token}} automatically.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8001" },
+    { "key": "access_token", "value": "" },
+    { "key": "course_id", "value": "1" },
+    { "key": "enrollment_id", "value": "1" },
+    { "key": "plan_id", "value": "1" },
+    { "key": "subscription_id", "value": "1" },
+    { "key": "payment_id", "value": "1" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{access_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "01 Auth",
+      "item": [
+        {
+          "name": "Register Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Asha Student\",\n  \"email\": \"asha.student.demo@gmail.com\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": "{{base_url}}/register/"
+          }
+        },
+        {
+          "name": "Register Second Student",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Khaja Ahmed\",\n  \"email\": \"khaja.demo@gmail.com\",\n  \"password\": \"StrongPass123!\"\n}"
+            },
+            "url": "{{base_url}}/auth/register/"
+          }
+        },
+        {
+          "name": "Login",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "const data = pm.response.json();",
+                "if (data.access_token) pm.collectionVariables.set('access_token', data.access_token);"
+              ]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"khaja1@gmail.com\",\n  \"password\": \"DemoPass123!\"\n}"
+            },
+            "url": "{{base_url}}/login/"
+          }
+        },
+        {
+          "name": "Logout Log",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/auth/logout/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 Courses",
+      "item": [
+        { "name": "List Courses", "request": { "method": "GET", "url": "{{base_url}}/courses/" } },
+        { "name": "Course Details", "request": { "method": "GET", "url": "{{base_url}}/courses/{{course_id}}" } },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Python Full Stack Foundations\",\n  \"description\": \"A practical beginner-friendly course.\",\n  \"thumbnail\": null,\n  \"duration\": \"8 Hours\",\n  \"level\": \"Beginner\",\n  \"status\": \"published\",\n  \"is_premium\": false,\n  \"price\": 0,\n  \"instructor_commission\": 0\n}"
+            },
+            "url": "{{base_url}}/courses/"
+          }
+        },
+        {
+          "name": "Update Course",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Python Full Stack Foundations - Updated\",\n  \"description\": \"Updated course description.\",\n  \"status\": \"published\",\n  \"is_premium\": true,\n  \"price\": 499,\n  \"instructor_commission\": 20\n}"
+            },
+            "url": "{{base_url}}/courses/{{course_id}}"
+          }
+        },
+        {
+          "name": "Add Lesson",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Variables and Data Types\",\n  \"content\": \"Lesson content goes here.\",\n  \"video_url\": \"https://www.youtube.com/watch?v=rfscVS0vtbw\",\n  \"order\": 1\n}"
+            },
+            "url": "{{base_url}}/courses/{{course_id}}/lessons/"
+          }
+        },
+        { "name": "Delete Course", "request": { "method": "DELETE", "url": "{{base_url}}/courses/{{course_id}}" } }
+      ]
+    },
+    {
+      "name": "03 Enrollment and Progress",
+      "item": [
+        {
+          "name": "Enroll",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "const data = pm.response.json();",
+                "if (data.id) pm.collectionVariables.set('enrollment_id', data.id);"
+              ]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"course_id\": {{course_id}}\n}"
+            },
+            "url": "{{base_url}}/enroll/"
+          }
+        },
+        { "name": "My Courses", "request": { "method": "GET", "url": "{{base_url}}/my-courses/" } },
+        {
+          "name": "Update Progress",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enrollment_id\": {{enrollment_id}},\n  \"completed_lessons\": 1\n}"
+            },
+            "url": "{{base_url}}/progress/update/"
+          }
+        },
+        { "name": "View Progress", "request": { "method": "GET", "url": "{{base_url}}/progress/view/" } }
+      ]
+    },
+    {
+      "name": "04 Subscriptions and Payments",
+      "item": [
+        { "name": "List Plans", "request": { "method": "GET", "url": "{{base_url}}/plans/" } },
+        { "name": "Plan Details", "request": { "method": "GET", "url": "{{base_url}}/plans/{{plan_id}}" } },
+        {
+          "name": "Subscribe",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "const data = pm.response.json();",
+                "if (data.id) pm.collectionVariables.set('subscription_id', data.id);"
+              ]
+            }
+          }],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"plan_id\": {{plan_id}}\n}"
+            },
+            "url": "{{base_url}}/subscribe/"
+          }
+        },
+        { "name": "My Subscriptions", "request": { "method": "GET", "url": "{{base_url}}/subscriptions/me" } },
+        { "name": "Renew Subscription", "request": { "method": "POST", "url": "{{base_url}}/subscriptions/renew/{{subscription_id}}" } },
+        {
+          "name": "Make Successful Payment",
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "const data = pm.response.json();",
+                "if (data.id) pm.collectionVariables.set('payment_id', data.id);"
+              ]
+            }
+          }],
+          "request": { "method": "POST", "url": "{{base_url}}/payments/pay/{{subscription_id}}?payment_status=success" }
+        },
+        { "name": "Make Failed Payment", "request": { "method": "POST", "url": "{{base_url}}/payments/pay/{{subscription_id}}?payment_status=failed" } },
+        { "name": "Payment History", "request": { "method": "GET", "url": "{{base_url}}/payments/" } },
+        { "name": "Download Invoice PDF", "request": { "method": "GET", "url": "{{base_url}}/payments/{{payment_id}}/invoice/" } }
+      ]
+    },
+    {
+      "name": "05 Notifications",
+      "item": [
+        { "name": "List Notifications", "request": { "method": "GET", "url": "{{base_url}}/notifications/" } },
+        {
+          "name": "Mark Selected Notifications Read",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notification_ids\": [1, 2]\n}"
+            },
+            "url": "{{base_url}}/notifications/mark-read/"
+          }
+        },
+        {
+          "name": "Mark All Notifications Read",
+          "request": { "method": "POST", "url": "{{base_url}}/notifications/mark-all-read/" }
+        },
+        {
+          "name": "Admin Broadcast",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Platform Update\",\n  \"message\": \"A new course bundle is now available for learners.\",\n  \"link\": \"/courses/\"\n}"
+            },
+            "url": "{{base_url}}/notifications/broadcast/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Profile",
+      "item": [
+        { "name": "My Profile", "request": { "method": "GET", "url": "{{base_url}}/profile/me" } },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Asha Student Updated\",\n  \"email\": \"asha.student.updated@gmail.com\"\n}"
+            },
+            "url": "{{base_url}}/profile/me"
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"StrongPass123\",\n  \"new_password\": \"StrongPass123\"\n}"
+            },
+            "url": "{{base_url}}/profile/change-password"
+          }
+        },
+        {
+          "name": "Update Profile Picture",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"profile_picture\": \"\"\n}"
+            },
+            "url": "{{base_url}}/profile/profile-picture"
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Activity",
+      "item": [
+        {
+          "name": "Log Activity",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action_type\": \"profile_update\",\n  \"action_detail\": \"Manual activity log test from Postman.\"\n}"
+            },
+            "url": "{{base_url}}/activity/"
+          }
+        },
+        { "name": "My Activity", "request": { "method": "GET", "url": "{{base_url}}/activity/" } }
+      ]
+    },
+    {
+      "name": "08 Analytics",
+      "item": [
+        { "name": "Analytics Overview", "request": { "method": "GET", "url": "{{base_url}}/analytics/overview/" } },
+        { "name": "Monthly Revenue", "request": { "method": "GET", "url": "{{base_url}}/analytics/monthly/" } },
+        { "name": "Revenue By Plan", "request": { "method": "GET", "url": "{{base_url}}/analytics/revenue-by-plan/" } }
+      ]
+    }
+  ]
+}

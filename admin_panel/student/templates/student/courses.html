@@ -1,0 +1,23 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Courses | AKR LMS{% endblock %}
+{% block page_id %}courses{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Course Marketplace</span>
+        <h1>Browse Courses</h1>
+        <p>Search free and premium courses published from the admin/instructor side.</p>
+    </div>
+</div>
+<div class="toolbar-card mb-4">
+    <input class="form-control" id="courseSearch" type="search" placeholder="Search by title, description, or level">
+    <select class="form-select" id="courseTypeFilter">
+        <option value="all">All Courses</option>
+        <option value="free">Free</option>
+        <option value="premium">Premium</option>
+    </select>
+</div>
+<div class="row g-4" id="courseGrid"></div>
+{% endblock %}

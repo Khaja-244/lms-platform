@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'dashboard:index' %}">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'courses:course_list' %}">Courses</a>
+                </li>
+                <li class="breadcrumb-item active">
+                    {{ title }}
+                </li>
+            </ol>
+        </nav>
+
+        <h1>{{ title }}</h1>
+        <p>Create or update course information.</p>
+    </div>
+</div>
+
+<section class="panel form-panel wide">
+
+<form
+    method="post"
+    enctype="multipart/form-data"
+    class="needs-validation js-submit-with-spinner"
+    novalidate
+>
+
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">
+        {{ form.non_field_errors }}
+    </div>
+    {% endif %}
+
+    <div class="mb-3">
+        <label class="form-label">Course Title</label>
+        {{ form.title }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Description</label>
+        {{ form.description }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Thumbnail</label>
+        {{ form.thumbnail }}
+
+        {% if form.instance.thumbnail %}
+            <div class="mt-2">
+                <img
+                    src="{{ form.instance.thumbnail.url }}"
+                    width="180"
+                    class="img-thumbnail"
+                >
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Duration</label>
+            {{ form.duration }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Level</label>
+            {{ form.level }}
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Instructor</label>
+            {{ form.instructor }}
+        </div>
+
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Status</label>
+            {{ form.status }}
+        </div>
+
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-4 mb-3">
+            <div class="form-check form-switch mt-4">
+                {{ form.is_premium }}
+                <label class="form-check-label">Premium Course</label>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Course Price</label>
+            {{ form.price }}
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <label class="form-label">Instructor Commission (%)</label>
+            {{ form.instructor_commission }}
+        </div>
+
+    </div>
+
+    <div class="form-actions">
+
+        <a href="{% url 'courses:course_list' %}"
+           class="btn btn-outline-secondary">
+            Cancel
+        </a>
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            <i class="bi bi-check2"></i>
+            Save Course
+
+        </button>
+
+    </div>
+
+</form>
+
+</section>
+
+{% endblock %}

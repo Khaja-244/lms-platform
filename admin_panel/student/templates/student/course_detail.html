@@ -1,0 +1,9 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Course Details | AKR LMS{% endblock %}
+{% block page_id %}course-detail{% endblock %}
+
+{% block content %}
+<script>window.STUDENT_COURSE_ID = {{ course_id }};</script>
+<div id="courseDetailRoot"></div>
+{% endblock %}

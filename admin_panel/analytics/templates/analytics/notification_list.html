@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <span class="section-kicker">Notifications</span>
+        <h1>Notification Center</h1>
+        <p class="text-secondary mb-0">Manage meaningful in-app and email notification events.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'analytics:notification_mark_all_read' %}" class="btn btn-outline-primary">
+            <i class="bi bi-check2-all me-1"></i>Mark All Read
+        </a>
+        <a href="{% url 'analytics:notification_create' %}" class="btn btn-primary">
+            <i class="bi bi-broadcast me-1"></i>Create Notification
+        </a>
+    </div>
+</div>
+
+<div class="panel">
+    <div class="table-responsive">
+        <table class="table enhanced-table align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>Event</th>
+                    <th>User</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Email</th>
+                    <th>Time</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for notification in notifications %}
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="notification-icon"><i class="bi {{ notification.icon }}"></i></span>
+                            <div>
+                                <strong>{{ notification.title }}</strong>
+                                <div class="text-secondary small">{{ notification.get_notification_type_display }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ notification.user.name }}<div class="text-secondary small">{{ notification.user.email }}</div></td>
+                    <td>
+                        {{ notification.message|truncatechars:90 }}
+                        {% if notification.link %}<div><a href="{{ notification.link }}" class="small">Open link</a></div>{% endif %}
+                    </td>
+                    <td>
+                        {% if notification.is_read %}
+                            <span class="badge text-bg-success">Read</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">Unread</span>
+                        {% endif %}
+                    </td>
+                    <td>{% if notification.email_sent %}<span class="badge text-bg-success">Sent</span>{% else %}<span class="badge text-bg-light">Pending</span>{% endif %}</td>
+                    <td>{{ notification.created_at|timesince }} ago</td>
+                    <td class="text-end">
+                        {% if not notification.is_read %}
+                            <a href="{% url 'analytics:notification_mark_read' notification.pk %}" class="btn btn-sm btn-outline-primary">Mark Read</a>
+                        {% else %}
+                            <span class="text-secondary small">Done</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7" class="text-center text-secondary py-4">No notifications yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <a href="{% url 'student:dashboard' %}" class="text-decoration-none text-white d-flex align-items-center">
+            <i class="bi bi-play-circle-fill me-2"></i>
+            <span>AKR LMS</span>
+        </a>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'student:dashboard' %}">
+                    <i class="bi bi-grid-fill"></i><span>Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'courses' or request.resolver_match.url_name == 'course_detail' %}active{% endif %}" href="{% url 'student:courses' %}">
+                    <i class="bi bi-book-fill"></i><span>Courses</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'my_courses' or request.resolver_match.url_name == 'lesson_player' %}active{% endif %}" href="{% url 'student:my_courses' %}">
+                    <i class="bi bi-play-btn-fill"></i><span>My Courses</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'plans' %}active{% endif %}" href="{% url 'student:plans' %}">
+                    <i class="bi bi-stars"></i><span>Plans</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'subscription' %}active{% endif %}" href="{% url 'student:subscription' %}">
+                    <i class="bi bi-award-fill"></i><span>Subscription</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'payments' %}active{% endif %}" href="{% url 'student:payments' %}">
+                    <i class="bi bi-credit-card-fill"></i><span>Payments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}" href="{% url 'student:notifications' %}">
+                    <i class="bi bi-bell-fill"></i><span>Notifications</span>
+                    <span class="badge bg-danger rounded-pill ms-auto d-none" data-unread-count>0</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'assignments' %}active{% endif %}" href="{% url 'student:assignments' %}">
+                    <i class="bi bi-file-earmark-check-fill"></i><span>Assignments</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'chat' %}active{% endif %}" href="{% url 'student:chat' %}">
+                    <i class="bi bi-chat-dots-fill"></i><span>Messages</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'attendance' %}active{% endif %}" href="{% url 'student:attendance' %}">
+                    <i class="bi bi-calendar2-check-fill"></i><span>Attendance</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}" href="{% url 'student:profile' %}">
+                    <i class="bi bi-person-circle"></i><span>Profile</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3">
+                <button class="nav-link w-100 text-start border-0" type="button" data-logout>
+                    <i class="bi bi-box-arrow-right"></i><span>Logout</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+</aside>

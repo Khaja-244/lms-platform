@@ -1,0 +1,49 @@
+{% extends "student/base.html" %}
+
+{% block title %}Student Register | AKR LMS{% endblock %}
+{% block body_class %}student-auth{% endblock %}
+{% block page_id %}register{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-copy">
+        <span class="brand-pill"><i class="bi bi-person-plus-fill"></i> Join AKR LMS</span>
+        <h1>Start your learning account.</h1>
+        <p>Create a student profile, subscribe to plans, enroll into courses, and continue lessons from a polished LMS experience.</p>
+    </div>
+
+    <div class="card auth-card">
+        <div class="card-body p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <div class="login-logo"><i class="bi bi-mortarboard-fill"></i></div>
+                <h2 class="fw-bold mb-1">Student Registration</h2>
+                <p class="text-muted mb-0">Registration always creates a student account.</p>
+            </div>
+
+            <form id="registerForm" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-control form-control-lg" autocomplete="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control form-control-lg" autocomplete="email" pattern=".+@gmail\.com$" title="Enter a Gmail address ending with @gmail.com" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" minlength="8" maxlength="128" pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}" title="Use at least 8 characters with uppercase, lowercase, number, and special character" class="form-control form-control-lg" autocomplete="new-password" required>
+                </div>
+                <button type="submit" id="registerSubmit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-person-check me-2"></i> Create Account
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <span class="text-muted">Already registered?</span>
+                <a href="{% url 'student:login' %}" class="fw-semibold">Login</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

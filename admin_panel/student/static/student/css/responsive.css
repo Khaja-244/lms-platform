@@ -1,0 +1,204 @@
+/* ============================================================
+   FILE: student/static/student/css/responsive.css
+   Description: Responsive Layout Styles
+   ============================================================ */
+
+/* ============================================================
+   Tablet & Small Desktop
+   ============================================================ */
+
+@media (max-width: 992px) {
+
+    .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main-wrapper {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .navbar-search .form-control {
+        width: 150px;
+    }
+
+    .auth-layout,
+    .course-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-layout {
+        padding: 32px 20px;
+    }
+
+    .auth-copy h1 {
+        font-size: 44px;
+    }
+
+}
+
+/* ============================================================
+   Mobile Devices
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    :root {
+        --navbar-height: 58px;
+        --footer-height: 52px;
+    }
+
+    .sidebar {
+        width: 260px;
+        padding: 1rem 0.75rem;
+    }
+
+    .sidebar-brand {
+        font-size: 1.2rem;
+        padding-bottom: 1rem;
+    }
+
+    .navbar-header {
+        padding: 0 0.8rem;
+    }
+
+    .navbar-search {
+        display: none !important;
+    }
+
+    .navbar-actions .nav-link i {
+        font-size: 1.2rem;
+    }
+
+    .navbar-actions .dropdown-menu {
+        min-width: 200px;
+    }
+
+    .content-area .container-fluid {
+        padding: 1rem !important;
+    }
+
+    .main-footer {
+        font-size: 0.8rem;
+        padding: 0.75rem;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    .main-footer .col-md-6 {
+        width: 100%;
+        text-align: center !important;
+        margin-bottom: 0.4rem;
+    }
+
+    .main-footer .badge {
+        margin-top: 4px;
+    }
+
+    .btn-sidebar-toggle {
+        font-size: 1.4rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+
+    .page-heading,
+    .continue-card {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-card {
+        grid-template-columns: 1fr;
+    }
+
+    .auth-layout {
+        min-height: auto;
+    }
+
+    .auth-copy h1 {
+        font-size: 36px;
+    }
+
+    .course-visual {
+        min-height: 180px;
+    }
+
+}
+
+/* ============================================================
+   Small Mobile Devices
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+    .sidebar {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .sidebar-nav .nav-link {
+        font-size: 0.9rem;
+        padding: 0.65rem;
+    }
+
+    .navbar-actions .me-3 {
+        margin-right: 0.6rem !important;
+    }
+
+    .navbar-actions .dropdown-menu {
+        min-width: 180px;
+        right: -10px;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .card-header,
+    .card-body {
+        padding: 1rem;
+    }
+
+    .btn {
+        font-size: 0.9rem;
+    }
+
+    h1,
+    .h1 {
+        font-size: 1.8rem;
+    }
+
+    h2,
+    .h2 {
+        font-size: 1.5rem;
+    }
+
+    h3,
+    .h3 {
+        font-size: 1.3rem;
+    }
+
+}
+
+/* ============================================================
+   Large Screens
+   ============================================================ */
+
+@media (min-width: 1200px) {
+
+    .container-fluid {
+        max-width: 1600px;
+    }
+
+}

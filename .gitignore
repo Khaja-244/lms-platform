@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Django
+admin_panel/staticfiles/
+admin_panel/db.sqlite3
+admin_panel/.env
+
+# FastAPI
+user_api/.env
+
+# Docker
+*.log
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

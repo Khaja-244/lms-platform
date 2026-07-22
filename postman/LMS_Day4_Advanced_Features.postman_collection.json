@@ -1,0 +1,32 @@
+{
+  "info": {
+    "name": "AKR LMS - Day 4 Advanced Features",
+    "description": "Attendance, assignments, grading, notifications, and analytics. Run the login requests first and store access_token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "fastapi_base_url", "value": "http://localhost:8001"},
+    {"key": "django_base_url", "value": "http://localhost:8000"},
+    {"key": "access_token", "value": ""},
+    {"key": "course_id", "value": "1"},
+    {"key": "student_id", "value": "3"},
+    {"key": "assignment_id", "value": "1"},
+    {"key": "submission_id", "value": "1"}
+  ],
+  "auth": {"type": "bearer", "bearer": [{"key": "token", "value": "{{access_token}}", "type": "string"}]},
+  "item": [
+    {"name": "Attendance", "item": [
+      {"name": "Mark attendance", "request": {"method": "POST", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\n  \"course_id\": {{course_id}},\n  \"date\": \"2026-07-22\",\n  \"records\": [{\"student_id\": {{student_id}}, \"status\": \"Present\"}]\n}"}, "url": "{{fastapi_base_url}}/attendance/mark"}, "event": [{"listen": "test", "script": {"exec": ["pm.test('Created or duplicate rejected safely', () => pm.expect([201,409]).to.include(pm.response.code));"]}}]},
+      {"name": "Student attendance", "request": {"method": "GET", "url": "{{fastapi_base_url}}/attendance/student/{{student_id}}/?course_id={{course_id}}"}},
+      {"name": "Course attendance range", "request": {"method": "GET", "url": "{{fastapi_base_url}}/attendance/course/{{course_id}}/?from=2026-07-01&to=2026-07-31"}}
+    ]},
+    {"name": "Assignments", "item": [
+      {"name": "List assignments", "request": {"method": "GET", "url": "{{fastapi_base_url}}/assignments/"}},
+      {"name": "Create assignment", "request": {"method": "POST", "body": {"mode": "formdata", "formdata": [{"key": "course_id", "value": "{{course_id}}", "type": "text"}, {"key": "title", "value": "Production API Review", "type": "text"}, {"key": "description", "value": "Submit API documentation and tests.", "type": "text"}, {"key": "deadline", "value": "2026-12-31T18:00:00Z", "type": "text"}, {"key": "file", "type": "file", "src": ""}]}, "url": "{{fastapi_base_url}}/assignments/create"}},
+      {"name": "Submit assignment", "request": {"method": "POST", "body": {"mode": "formdata", "formdata": [{"key": "assignment_id", "value": "{{assignment_id}}", "type": "text"}, {"key": "file", "type": "file", "src": ""}]}, "url": "{{fastapi_base_url}}/assignments/submit"}},
+      {"name": "Grade submission", "request": {"method": "PUT", "header": [{"key": "Content-Type", "value": "application/json"}], "body": {"mode": "raw", "raw": "{\"submission_id\": {{submission_id}}, \"grade\": 92, \"remarks\": \"Excellent work\"}"}, "url": "{{fastapi_base_url}}/assignments/grade"}}
+    ]},
+    {"name": "Notifications", "request": {"method": "GET", "url": "{{fastapi_base_url}}/notifications/"}},
+    {"name": "Django course analytics", "request": {"method": "GET", "auth": {"type": "noauth"}, "url": "{{django_base_url}}/analytics/dashboard/?course_id={{course_id}}"}}
+  ]
+}

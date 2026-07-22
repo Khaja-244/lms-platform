@@ -1,0 +1,23 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Assignments | AKR LMS{% endblock %}
+{% block page_id %}assignments{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="section-kicker">Coursework</span><h1>Assignments</h1><p>Create, submit, track, and grade coursework from one place.</p></div></div>
+<div id="assignmentAlert" class="alert d-none"></div>
+<section id="instructorAssignmentPanel" class="card border-0 shadow-sm mb-4 d-none">
+  <div class="card-body"><h2 class="h5 mb-3">Create assignment</h2>
+    <form id="createAssignmentForm" class="row g-3">
+      <div class="col-md-3"><label class="form-label">Course ID</label><input class="form-control" name="course_id" type="number" min="1" required></div>
+      <div class="col-md-5"><label class="form-label">Title</label><input class="form-control" name="title" maxlength="200" required></div>
+      <div class="col-md-4"><label class="form-label">Deadline</label><input class="form-control" name="deadline" type="datetime-local" required></div>
+      <div class="col-md-8"><label class="form-label">Description</label><textarea class="form-control" name="description" rows="2"></textarea></div>
+      <div class="col-md-4"><label class="form-label">Attachment (optional)</label><input class="form-control" name="file" type="file"></div>
+      <div class="col-12"><button class="btn btn-primary"><i class="bi bi-plus-circle me-2"></i>Create</button></div>
+    </form>
+  </div>
+</section>
+<div id="assignmentList" class="row g-4"><div class="col-12 text-muted">Loading assignments...</div></div>
+<section id="gradingPanel" class="card border-0 shadow-sm mt-4 d-none"><div class="card-body"><h2 class="h5 mb-3">Student submissions</h2><div id="submissionList" class="table-responsive"></div></div></section>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'student/js/assignments.js' %}"></script>{% endblock %}

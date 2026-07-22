@@ -1,0 +1,22 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Payments | AKR LMS{% endblock %}
+{% block page_id %}payments{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Billing</span>
+        <h1>Payment History</h1>
+        <p>View transactions, payment status, and download generated invoices.</p>
+    </div>
+</div>
+<div class="card">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Invoice</th><th>Amount</th><th>Status</th><th>Method</th><th>Date</th><th class="text-end">Action</th></tr></thead>
+            <tbody id="paymentsTable"></tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'student/base.html' %}
+{% load static %}
+{% block title %}Attendance | AKR LMS{% endblock %}
+{% block page_id %}attendance{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="section-kicker">Learning record</span><h1>Attendance</h1><p>View your course attendance percentage and daily status.</p></div></div>
+<section id="markAttendancePanel" class="card border-0 shadow-sm mb-4 d-none"><div class="card-body"><h2 class="h5">Mark attendance</h2><form id="markAttendanceForm" class="row g-3"><div class="col-md-3"><label class="form-label">Course ID</label><input class="form-control" name="course_id" type="number" min="1" required></div><div class="col-md-3"><label class="form-label">Date</label><input class="form-control" name="date" type="date" required></div><div class="col-md-6"><label class="form-label">Student records</label><input class="form-control" name="records" placeholder="3:Present, 4:Absent" required><div class="form-text">Comma-separated user ID and status pairs.</div></div><div class="col-12"><button class="btn btn-primary">Mark and notify</button></div></form><div id="markAttendanceResult" class="mt-3"></div></div></section>
+<div class="card border-0 shadow-sm"><div class="card-body">
+  <form id="attendanceForm" class="row g-3 align-items-end">
+    <div class="col-sm-6 col-lg-4"><label class="form-label">Course ID</label><input id="attendanceCourseId" class="form-control" type="number" min="1" required></div>
+    <div id="attendanceStudentField" class="col-sm-6 col-lg-4 d-none"><label class="form-label">Student user ID</label><input id="attendanceStudentId" class="form-control" type="number" min="1"></div>
+    <div class="col-sm-auto"><button class="btn btn-primary">View attendance</button></div>
+  </form>
+  <div id="attendanceSummary" class="mt-4"></div><div id="attendanceTable" class="table-responsive mt-3"></div>
+</div></div>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'student/js/attendance.js' %}"></script>{% endblock %}

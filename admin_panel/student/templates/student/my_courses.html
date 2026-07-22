@@ -1,0 +1,16 @@
+{% extends 'student/base.html' %}
+
+{% block title %}My Courses | AKR LMS{% endblock %}
+{% block page_id %}my-courses{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Learning Library</span>
+        <h1>My Courses</h1>
+        <p>Only courses you enrolled into are shown here.</p>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'student:courses' %}"><i class="bi bi-plus-circle me-2"></i>Browse More</a>
+</div>
+<div class="row g-4" id="myCoursesGrid"></div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "student/base.html" %}
+{% load static %}
+
+{% block title %}Student Login | AKR LMS{% endblock %}
+{% block body_class %}student-auth{% endblock %}
+{% block page_id %}login{% endblock %}
+
+{% block content %}
+<section class="auth-layout">
+    <div class="auth-copy">
+        <span class="brand-pill"><i class="bi bi-mortarboard-fill"></i> AKR LMS Student Portal</span>
+        <h1>Learn anytime, anywhere.</h1>
+        <p>Access enrolled courses, premium lessons, subscriptions, invoices, notifications, and learning progress from a real production-style student workspace.</p>
+        <div class="login-highlights">
+            <span><i class="bi bi-play-circle"></i> HD Courses</span>
+            <span><i class="bi bi-graph-up"></i> Progress Tracking</span>
+            <span><i class="bi bi-receipt"></i> Auto Invoices</span>
+        </div>
+    </div>
+
+    <div class="card auth-card">
+        <div class="card-body p-4 p-lg-5">
+            <div class="text-center mb-4">
+                <div class="login-logo"><i class="bi bi-play-btn-fill"></i></div>
+                <h2 class="fw-bold mb-1">Student Login</h2>
+                <p class="text-muted mb-0">Sign in with your student account.</p>
+            </div>
+
+            <form id="loginForm" novalidate>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control form-control-lg" autocomplete="email" pattern=".+@gmail\.com$" title="Enter a Gmail address ending with @gmail.com" required>
+                </div>
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control form-control-lg" autocomplete="current-password" required>
+                </div>
+                <button type="submit" id="loginSubmit" class="btn btn-primary btn-lg w-100">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <span class="text-muted">Don't have an account?</span>
+                <a href="{% url 'student:register' %}" class="fw-semibold">Register</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

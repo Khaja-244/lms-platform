@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block page_heading %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{{ title }}</h1>
+        <p class="text-muted mb-0">Keep pricing simple and clear for students.</p>
+    </div>
+</div>
+
+<section class="panel form-panel">
+    <form method="post" class="js-submit-with-spinner">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label class="form-label">Plan Name <span class="required">*</span></label>
+            {{ form.name }}
+            {{ form.name.errors }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            {{ form.description }}
+            {{ form.description.errors }}
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Price <span class="required">*</span></label>
+                {{ form.price }}
+                {{ form.price.errors }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Duration Days <span class="required">*</span></label>
+                {{ form.duration_days }}
+                {{ form.duration_days.errors }}
+            </div>
+        </div>
+
+        <div class="form-check mt-3">
+            {{ form.is_active }}
+            <label class="form-check-label">Active plan</label>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'plans:plan_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check2 me-1"></i>Save Plan
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}
+

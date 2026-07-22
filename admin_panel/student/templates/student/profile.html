@@ -1,0 +1,58 @@
+{% extends 'student/base.html' %}
+
+{% block title %}Profile | AKR LMS{% endblock %}
+{% block page_id %}profile{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <div>
+        <span class="section-kicker">Account</span>
+        <h1>Profile</h1>
+        <p>Manage personal details, password, and profile picture.</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-xl-4">
+        <div class="card profile-card">
+            <div class="card-body text-center">
+                <div class="profile-photo mx-auto mb-3" id="profilePhoto">S</div>
+                <h3 id="profileName">Student</h3>
+                <p class="text-muted" id="profileEmail">student@example.com</p>
+                <span class="badge bg-primary" id="profileRole">student</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-8">
+        <div class="card mb-4">
+            <div class="card-header">Personal Details</div>
+            <div class="card-body">
+                <form id="profileForm" class="row g-3">
+                    <div class="col-md-6"><label class="form-label" for="profileNameInput">Name</label><input class="form-control" id="profileNameInput" name="name" required></div>
+                    <div class="col-md-6"><label class="form-label" for="profileEmailInput">Email</label><input class="form-control" id="profileEmailInput" name="email" type="email" required></div>
+                    <div class="col-12"><button class="btn btn-primary" type="submit">Save Profile</button></div>
+                </form>
+            </div>
+        </div>
+        <div class="card mb-4">
+            <div class="card-header">Change Password</div>
+            <div class="card-body">
+                <form id="passwordForm" class="row g-3">
+                    <div class="col-md-6"><label class="form-label" for="currentPassword">Current Password</label><input class="form-control" id="currentPassword" name="current_password" type="password" autocomplete="current-password" required></div>
+                    <div class="col-md-6"><label class="form-label" for="newPassword">New Password</label><input class="form-control" id="newPassword" name="new_password" type="password" minlength="6" autocomplete="new-password" required></div>
+                    <div class="col-12"><button class="btn btn-outline-primary" type="submit">Change Password</button></div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header">Profile Picture</div>
+            <div class="card-body">
+                <form id="pictureForm" class="row g-3">
+                    <div class="col-md-8"><input class="form-control" id="profilePictureInput" type="file" accept="image/*"></div>
+                    <div class="col-md-4"><button class="btn btn-outline-primary w-100" type="submit">Upload Picture</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

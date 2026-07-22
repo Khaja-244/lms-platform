@@ -1,0 +1,52 @@
+<header class="navbar-header">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <button class="btn btn-sidebar-toggle" id="sidebarToggle" type="button" aria-label="Toggle navigation">
+                    <i class="bi bi-list"></i>
+                </button>
+                <a class="navbar-brand d-lg-none" href="{% url 'student:dashboard' %}">
+                    <i class="bi bi-play-circle-fill"></i>
+                    AKR LMS
+                </a>
+            </div>
+
+            <div class="navbar-search d-none d-md-block">
+                <form class="d-flex" action="{% url 'student:courses' %}">
+                    <input class="form-control form-control-sm" name="q" type="search" placeholder="Search courses...">
+                    <button class="btn btn-outline-primary btn-sm ms-2" type="submit">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="navbar-actions d-flex align-items-center">
+                <div class="dropdown me-3">
+                    <a class="nav-link position-relative" href="#" data-bs-toggle="dropdown" aria-label="Notifications">
+                        <i class="bi bi-bell-fill fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" data-unread-count>0</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end notification-menu" id="notificationDropdown">
+                        <li><h6 class="dropdown-header">Notifications</h6></li>
+                        <li><span class="dropdown-item-text text-muted">Loading...</span></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-center" href="{% url 'student:notifications' %}">View all notifications</a></li>
+                    </ul>
+                </div>
+
+                <div class="dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" data-bs-toggle="dropdown">
+                        <span class="student-avatar me-2" data-student-avatar>S</span>
+                        <span class="d-none d-md-inline" data-student-name>Student</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="{% url 'student:profile' %}"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                        <li><a class="dropdown-item" href="{% url 'student:payments' %}"><i class="bi bi-receipt me-2"></i> Payments</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><button class="dropdown-item text-danger" type="button" data-logout><i class="bi bi-box-arrow-right me-2"></i> Logout</button></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

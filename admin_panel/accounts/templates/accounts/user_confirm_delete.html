@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Delete User{% endblock %}
+{% block page_heading %}Delete User{% endblock %}
+
+{% block content %}
+<section class="panel danger-panel">
+    <div class="danger-icon"><i class="bi bi-exclamation-triangle"></i></div>
+    <h1>Delete User</h1>
+    <p>Are you sure you want to delete <strong>{{ user_obj.name }}</strong> ({{ user_obj.email }})?</p>
+    <form method="post" class="js-submit-with-spinner" data-confirm="This will permanently delete {{ user_obj.name }}. Continue?">
+        {% csrf_token %}
+        <div class="form-actions">
+            <a href="{% url 'accounts:user_list' %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger" data-loading-text="Deleting...">
+                <span class="btn-label"><i class="bi bi-trash me-2"></i>Delete User</span>
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

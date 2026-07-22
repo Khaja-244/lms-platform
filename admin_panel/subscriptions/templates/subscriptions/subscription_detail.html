@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Subscription Detail{% endblock %}
+{% block page_heading %}Subscription Detail{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>{{ subscription.user.name }}</h1>
+        <p class="text-muted mb-0">{{ subscription.plan.name }} subscription details.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'subscriptions:subscription_edit' subscription.pk %}" class="btn btn-outline-primary">Edit</a>
+        <a href="{% url 'subscriptions:subscription_list' %}" class="btn btn-outline-secondary">Back</a>
+    </div>
+</div>
+
+<section class="panel">
+    <table class="table table-bordered mb-0">
+        <tr><th>User</th><td>{{ subscription.user.name }} ({{ subscription.user.email }})</td></tr>
+        <tr><th>Plan</th><td>{{ subscription.plan.name }}</td></tr>
+        <tr><th>Status</th><td>{{ subscription.get_status_display }}</td></tr>
+        <tr><th>Start Date</th><td>{{ subscription.start_date }}</td></tr>
+        <tr><th>End Date</th><td>{{ subscription.end_date }}</td></tr>
+        <tr><th>Active Now</th><td>{{ subscription.is_active|yesno:"Yes,No" }}</td></tr>
+    </table>
+</section>
+{% endblock %}
+

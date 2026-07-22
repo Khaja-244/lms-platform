@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Delete Lesson{% endblock %}
+{% block page_heading %}Delete Lesson{% endblock %}
+
+{% block content %}
+<section class="panel danger-panel">
+    <div class="danger-icon"><i class="bi bi-exclamation-triangle"></i></div>
+    <h1>Delete Lesson</h1>
+    <p>Are you sure you want to delete <strong>{{ lesson.title }}</strong> from <strong>{{ course.title }}</strong>?</p>
+    <form method="post" class="js-submit-with-spinner" data-confirm="This will permanently delete {{ lesson.title }}. Continue?">
+        {% csrf_token %}
+        <div class="form-actions">
+            <a href="{% url 'courses:course_detail' course.pk %}" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger" data-loading-text="Deleting...">
+                <span class="btn-label"><i class="bi bi-trash me-2"></i>Delete Lesson</span>
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

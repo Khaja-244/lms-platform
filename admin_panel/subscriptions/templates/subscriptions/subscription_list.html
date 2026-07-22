@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Subscriptions{% endblock %}
+{% block page_heading %}Subscriptions{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1>Subscriptions</h1>
+        <p class="text-muted mb-0">Track plan access, expiry, and active student subscriptions.</p>
+    </div>
+    <div class="page-actions">
+        <a href="{% url 'subscriptions:subscription_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-lg me-1"></i>Add Subscription
+        </a>
+    </div>
+</div>
+
+<section class="panel">
+    <div class="table-responsive">
+        <table class="table align-middle enhanced-table mb-0">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Plan</th>
+                    <th>Status</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for subscription in subscriptions %}
+                <tr>
+                    <td>
+                        <strong>{{ subscription.user.name }}</strong>
+                        <div class="small text-muted">{{ subscription.user.email }}</div>
+                    </td>
+                    <td>{{ subscription.plan.name }}</td>
+                    <td>
+                        {% if subscription.status == "active" %}
+                            <span class="badge text-bg-success">Active</span>
+                        {% elif subscription.status == "expired" %}
+                            <span class="badge text-bg-warning">Expired</span>
+                        {% else %}
+                            <span class="badge text-bg-secondary">Cancelled</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ subscription.start_date|date:"d M Y" }}</td>
+                    <td>{{ subscription.end_date|date:"d M Y" }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'subscriptions:subscription_detail' subscription.pk %}" class="btn btn-outline-primary btn-sm">View</a>
+                        <a href="{% url 'subscriptions:subscription_edit' subscription.pk %}" class="btn btn-outline-secondary btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <i class="bi bi-person-check"></i>
+                            <h3>No subscriptions found</h3>
+                            <p>Create a subscription after a student purchases a plan.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
